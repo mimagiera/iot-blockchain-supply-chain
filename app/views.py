@@ -1,10 +1,12 @@
 import datetime
 import json
+import time
 
 import requests
 from flask import render_template, redirect, request
 
 from app import app
+from app.model import *
 
 # The node with which our application interacts, there can be multiple
 # such nodes as well.
@@ -50,12 +52,18 @@ def submit_textarea():
     """
     Endpoint to create a new transaction via our application.
     """
-    post_content = request.form["content"]
     author = request.form["author"]
+    number_of_parts_to_produce = request.form["number_of_parts_to_produce"]
+    product_schema = request.form["product_schema"]
+
+    product_description = ProductDescription(json.dumps(ProductType.BRICK.value), product_schema,
+                                             number_of_parts_to_produce)
+
+    my_data = OrderDescription([json.dumps(product_description.__dict__)], time.time(), "iddddddd")
 
     post_object = {
         'author': author,
-        'content': post_content,
+        'my_data': json.dumps(my_data.__dict__)
     }
 
     # Submit a transaction

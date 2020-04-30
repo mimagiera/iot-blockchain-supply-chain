@@ -1,9 +1,9 @@
-from hashlib import sha256
 import json
 import time
+from hashlib import sha256
 
-from flask import Flask, request
 import requests
+from flask import Flask, request
 
 
 class Block:
@@ -150,7 +150,7 @@ peers = set()
 @app.route('/new_transaction', methods=['POST'])
 def new_transaction():
     tx_data = request.get_json()
-    required_fields = ["author", "content"]
+    required_fields = ["author", "my_data"]
 
     for field in required_fields:
         if not tx_data.get(field):
@@ -324,4 +324,4 @@ def announce_new_block(block):
                       headers=headers)
 
 # Uncomment this line if you want to specify the port number in the code
-#app.run(debug=True, port=8000)
+# app.run(debug=True, port=8000)
