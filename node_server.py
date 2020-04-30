@@ -13,6 +13,7 @@ class Block:
         self.timestamp = timestamp
         self.previous_hash = previous_hash
         self.nonce = nonce
+        self.hash = self.compute_hash()
 
     def compute_hash(self):
         """
@@ -24,11 +25,12 @@ class Block:
 
 class Blockchain:
     # difficulty of our PoW algorithm
-    difficulty = 2
+    # difficulty = 2
 
     def __init__(self):
         self.unconfirmed_transactions = []
         self.chain = []
+        self.has_node_authority = True
 
     def create_genesis_block(self):
         """
@@ -37,18 +39,17 @@ class Blockchain:
         a valid hash.
         """
         genesis_block = Block(0, [], 0, "0")
-        genesis_block.hash = genesis_block.compute_hash()
         self.chain.append(genesis_block)
 
     @property
     def last_block(self):
         return self.chain[-1]
 
-    def add_block(self, block, proof):
+    def add_block(self, block):
         """
         A function that adds the block to the chain after verification.
         Verification includes:
-        * Checking if the proof is valid.
+        * Checking if node has authority
         * The previous_hash referred in the block and the hash of latest block
           in the chain match.
         """
@@ -57,39 +58,26 @@ class Blockchain:
         if previous_hash != block.previous_hash:
             return False
 
-        if not Blockchain.is_valid_proof(block, proof):
+        # if not Blockchain.is_valid_proof(block, proof):
+        #     return False
+        if not self.has_node_authority:
             return False
 
-        block.hash = proof
         self.chain.append(block)
         return True
-
-    @staticmethod
-    def proof_of_work(block):
-        """
-        Function that tries different values of nonce to get a hash
-        that satisfies our difficulty criteria.
-        """
-        block.nonce = 0
-
-        computed_hash = block.compute_hash()
-        while not computed_hash.startswith('0' * Blockchain.difficulty):
-            block.nonce += 1
-            computed_hash = block.compute_hash()
-
-        return computed_hash
 
     def add_new_transaction(self, transaction):
         self.unconfirmed_transactions.append(transaction)
 
-    @classmethod
-    def is_valid_proof(cls, block, block_hash):
-        """
-        Check if block_hash is valid hash of block and satisfies
-        the difficulty criteria.
-        """
-        return (block_hash.startswith('0' * Blockchain.difficulty) and
-                block_hash == block.compute_hash())
+    # todo moze tutaj weźmiemy z requesta id nadawcy i zobaczymy czy jest w liscie autorized
+    # @classmethod
+    # def is_valid_proof(cls, block, block_hash):
+    #     """
+    #     Check if block_hash is valid hash of block and satisfies
+    #     the difficulty criteria.
+    #     """
+    #     return (block_hash.startswith('0' * Blockchain.difficulty) and
+    #             block_hash == block.compute_hash())
 
     @classmethod
     def check_chain_validity(cls, chain):
@@ -102,8 +90,7 @@ class Blockchain:
             # using `compute_hash` method.
             delattr(block, "hash")
 
-            if not cls.is_valid_proof(block, block_hash) or \
-                    previous_hash != block.previous_hash:
+            if previous_hash != block.previous_hash:
                 result = False
                 break
 
@@ -127,8 +114,7 @@ class Blockchain:
                           timestamp=time.time(),
                           previous_hash=last_block.hash)
 
-        proof = self.proof_of_work(new_block)
-        self.add_block(new_block, proof)
+        self.add_block(new_block)
 
         self.unconfirmed_transactions = []
 
@@ -251,8 +237,7 @@ def create_chain_from_dump(chain_dump):
                       block_data["timestamp"],
                       block_data["previous_hash"],
                       block_data["nonce"])
-        proof = block_data['hash']
-        added = generated_blockchain.add_block(block, proof)
+        added = generated_blockchain.add_block(block)
         if not added:
             raise Exception("The chain dump is tampered!!")
     return generated_blockchain
@@ -270,8 +255,8 @@ def verify_and_add_block():
                   block_data["previous_hash"],
                   block_data["nonce"])
 
-    proof = block_data['hash']
-    added = blockchain.add_block(block, proof)
+    # proof = block_data['hash']
+    added = blockchain.add_block(block)
 
     if not added:
         return "The block was discarded by the node", 400
