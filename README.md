@@ -1,7 +1,8 @@
-# IoT-blockchain-supp;y-chain
+# IoT-blockchain-supply-chain
 
 A simple tutorial for developing a blockchain application from scratch in Python.
- [step-by-step implementation tutorial](https://www.ibm.com/developerworks/cloud/library/cl-develop-blockchain-app-in-python/index.html) to get your answers :)
+
+[Step-by-step implementation tutorial](https://www.ibm.com/developerworks/cloud/library/cl-develop-blockchain-app-in-python/index.html).
 
 ## Instructions to run
 Install the dependencies,
