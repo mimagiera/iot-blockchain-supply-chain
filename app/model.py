@@ -17,13 +17,13 @@ class ProductDescription:
 
 
 class OrderDescription:
-    def __init__(self, product_descriptions, transaction_date, last_factory_id: str,
-                 current_factory_id=None):
+    def __init__(self, product_descriptions, transaction_date, current_factory_id: str,
+                 destination_factory_id: str):
         self.id = self.generate_id()
         self.product_descriptions = product_descriptions
         self.transaction_date = transaction_date
-        self.last_factory_id = last_factory_id
         self.current_factory_id = current_factory_id
+        self.destination_factory_id = destination_factory_id
 
     @staticmethod
     def generate_id():

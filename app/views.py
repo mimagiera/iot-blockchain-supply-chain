@@ -40,7 +40,7 @@ def fetch_posts():
 def index():
     fetch_posts()
     return render_template('index.html',
-                           title='YourNet: Decentralized '
+                           title='Smart manufacturing PoC'
                                  'content sharing',
                            posts=posts,
                            node_address=CONNECTED_NODE_ADDRESS,
@@ -52,7 +52,8 @@ def submit_textarea():
     """
     Endpoint to create a new transaction via our application.
     """
-    factory_id = request.form["factory_id"]
+    c_factory_id = request.form["current_factory_id"]
+    d_factory_id = request.form["destination_factory_id"]
     product = request.form["product"]
     number_of_parts_to_produce = request.form["number_of_parts_to_produce"]
     product_schema = request.form["product_schema"]
@@ -63,7 +64,8 @@ def submit_textarea():
     product_description = ProductDescription(json.dumps(ProductType[product].value), product_schema,
                                              number_of_parts_to_produce)
 
-    my_data = OrderDescription([json.dumps(product_description.__dict__)], time.time(), str(factory_id))
+    my_data = OrderDescription([json.dumps(product_description.__dict__)], time.time(),
+                               str(c_factory_id), str(d_factory_id))
 
     post_object = {
         'product': product,
