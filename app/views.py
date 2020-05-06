@@ -40,8 +40,7 @@ def fetch_posts():
 def index():
     fetch_posts()
     return render_template('index.html',
-                           title='Smart manufacturing PoC'
-                                 'content sharing',
+                           title='Smart manufacturing PoC',
                            posts=posts,
                            node_address=CONNECTED_NODE_ADDRESS,
                            readable_time=timestamp_to_string)
