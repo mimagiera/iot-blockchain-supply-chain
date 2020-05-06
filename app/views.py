@@ -52,6 +52,7 @@ def submit_textarea():
     """
     Endpoint to create a new transaction via our application.
     """
+    factory_id = request.form["factory_id"]
     product = request.form["product"]
     number_of_parts_to_produce = request.form["number_of_parts_to_produce"]
     product_schema = request.form["product_schema"]
@@ -62,7 +63,7 @@ def submit_textarea():
     product_description = ProductDescription(json.dumps(ProductType[product].value), product_schema,
                                              number_of_parts_to_produce)
 
-    my_data = OrderDescription([json.dumps(product_description.__dict__)], time.time(), "iddddddd")
+    my_data = OrderDescription([json.dumps(product_description.__dict__)], time.time(), str(factory_id))
 
     post_object = {
         'product': product,

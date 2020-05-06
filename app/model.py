@@ -25,7 +25,8 @@ class OrderDescription:
         self.last_factory_id = last_factory_id
         self.current_factory_id = current_factory_id
 
-    def generate_id(self):
+    @staticmethod
+    def generate_id():
         global ID
         ID = ID + 1
         return ID

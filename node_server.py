@@ -29,6 +29,7 @@ class Blockchain:
     def __init__(self):
         self.unconfirmed_transactions = []
         self.chain = []
+        self.has_node_authority = True
 
     def create_genesis_block(self):
         """
@@ -149,6 +150,7 @@ peers = set()
 # our application to add new data (posts) to the blockchain
 @app.route('/new_transaction', methods=['POST'])
 def new_transaction():
+    print("new transaction")
     tx_data = request.get_json()
     required_fields = ["product", "my_data"]
 
@@ -157,6 +159,7 @@ def new_transaction():
             return "Invalid transaction data", 404
 
     tx_data["timestamp"] = time.time()
+
 
     blockchain.add_new_transaction(tx_data)
 
